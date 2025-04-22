@@ -1,0 +1,51 @@
+# place this file in the main project directory, where both backend and frontend directories exist
+version: "3.8"
+
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: reimplementation_development
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: root
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:7.0-alpine
+    restart: always
+    ports:
+      - "6378:6379"
+    volumes:
+      - redis_data:/data
+
+  backend:
+    build: ./reimplementation-back-end  
+    depends_on:
+      - db
+      - redis
+    environment:
+      DATABASE_HOST: db
+      DATABASE_USERNAME: dev
+      DATABASE_PASSWORD: root
+      REDIS_URL: redis://redis:6379/0
+      RAILS_ENV: development
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./reimplementation-back-end:/app
+
+  frontend:
+    build: ./reimplementation-front-end  # Updated to match your directory
+    ports:
+      - "3000:80"
+    volumes:
+      - ./reimplementation-front-end:/app
+
+volumes:
+  mysql_data:
+  redis_data:
