@@ -71,7 +71,7 @@ const Edit: React.FC = () => {
 
   // Fetch user profile
   useEffect(() => {
-    axios.get(`http://localhost:3002/api/v1/users/${auth.user.id}/get_profile`, {
+    axios.get(`http://152.7.177.227:3002/api/v1/users/${auth.user.id}/get_profile`, {
       headers: {
         Authorization: `Bearer ${auth.authToken}`
       }
@@ -108,7 +108,7 @@ const Edit: React.FC = () => {
   }, [auth.user.id, reset, dispatch]);
 
   useEffect(() => {
-    axios.get(`http://localhost:3002/api/v1/institutions`, {
+    axios.get(`http://152.7.177.227:3002/api/v1/institutions`, {
       headers: {
         Authorization: `Bearer ${auth.authToken}`
       }
@@ -129,7 +129,7 @@ const Edit: React.FC = () => {
   const onSubmit = async (data: any) => {
     try {
       // Update profile
-      await axios.patch(`http://localhost:3002/api/v1/users/${auth.user.id}`, data, {
+      await axios.patch(`http://152.7.177.227:3002/api/v1/users/${auth.user.id}`, data, {
         headers: {
           Authorization: `Bearer ${auth.authToken}`
         },
@@ -137,7 +137,7 @@ const Edit: React.FC = () => {
 
       // Update password if provided
       if (data.password) {
-        await axios.post(`http://localhost:3002/api/v1/users/${auth.user.id}/update_password`, {
+        await axios.post(`http://152.7.177.227:3002/api/v1/users/${auth.user.id}/update_password`, {
           password: data.password,
           confirmPassword: data.confirmPassword,
         },{
