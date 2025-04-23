@@ -161,7 +161,7 @@ const Edit: React.FC = () => {
 
   return (
       <div className="edit-form-container">
-        <h2 className="h2-user-profile">User Profile Information</h2>
+        <h2 className="h2-user-profile">User Profile InformationY</h2>
         <Form onSubmit={handleSubmit(onSubmit)}>{/* Form Component */}
 
           {/* Full Name */}
