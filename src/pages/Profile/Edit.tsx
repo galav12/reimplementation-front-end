@@ -71,7 +71,7 @@ const Edit: React.FC = () => {
 
   // Fetch user profile
   useEffect(() => {
-    axios.get(`http://localhost:3002/api/v1/users/${auth.user.id}`, {
+    axios.get(`http://localhost:3002/api/v1/users/${auth.user.id}/get_profile`, {
       headers: {
         Authorization: `Bearer ${auth.authToken}`
       }
