@@ -1,4 +1,3 @@
-# place this file in the main project directory, where both backend and frontend directories exist
 version: "3.8"
 
 services:
@@ -14,6 +13,11 @@ services:
       - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
 
   redis:
     image: redis:7.0-alpine
@@ -22,12 +26,19 @@ services:
       - "6378:6379"
     volumes:
       - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   backend:
-    build: ./reimplementation-back-end  
+    build: ./reimplementation-back-end
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       DATABASE_HOST: db
       DATABASE_USERNAME: dev
@@ -38,13 +49,22 @@ services:
       - "3002:3002"
     volumes:
       - ./reimplementation-back-end:/app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   frontend:
-    build: ./reimplementation-front-end  # Updated to match your directory
+    build: ./reimplementation-front-end
+    depends_on:
+      backend:
+        condition: service_healthy
     ports:
       - "3000:80"
     volumes:
       - ./reimplementation-front-end:/app
+    restart: unless-stopped
 
 volumes:
   mysql_data:
