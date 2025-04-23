@@ -12,12 +12,7 @@ services:
     ports:
       - "3307:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 5s
-      timeout: 10s
-      retries: 5
+      - mysql_data:/var/lib/mysql  # Keep this for persistent database storage
 
   redis:
     image: redis:7.0-alpine
@@ -25,12 +20,7 @@ services:
     ports:
       - "6378:6379"
     volumes:
-      - redis_data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      - redis_data:/data  # Keep this for persistent Redis storage
 
   backend:
     build: ./reimplementation-back-end
@@ -47,13 +37,7 @@ services:
       RAILS_ENV: development
     ports:
       - "3002:3002"
-    volumes:
-      - ./reimplementation-back-end:/app
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3002/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    # Removed development volume mount
 
   frontend:
     build: ./reimplementation-front-end
@@ -62,10 +46,9 @@ services:
         condition: service_healthy
     ports:
       - "3000:80"
-    volumes:
-      - ./reimplementation-front-end:/app
+    # Removed development volume mount
     restart: unless-stopped
 
 volumes:
-  mysql_data:
-  redis_data:
+  mysql_data:  # Necessary for database persistence
+  redis_data:  # Necessary for Redis persistence
